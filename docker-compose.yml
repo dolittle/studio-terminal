@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: 'dolittle/mongodb:4.2.2'
+    ports:
+      - '27017:27017'
+
+
+  runtime:
+    image: 'dolittle/runtime:8.4.2'
+    ports:
+      - '50053:50053'
+    environment:
+      'DOLITTLE__RUNTIME__EVENTSTORE__BACKWARDSCOMPATIBILITY__VERSION': 'V7'
+      'DOLITTLE__RUNTIME__TENANTS__445f8ea8-1a6f-40d7-b2fc-796dba92dc44__RESOURCES__EVENTSTORE__SERVERS__0': 'mongo'
+  shell:
+    image: 'studio-shell:1'
+    build: '.'
+    ports:
+      - '7681:7681'
+    environment:
+      'DOLITTLE_MICROSERVICE': 'dev-getting-started'
+      'DOLITTLE_RUNTIME_ADDRESS': 'runtime:51052'
+      'DOLITTLE_MONGODB_ADDRESS': 'mongo:27017'
