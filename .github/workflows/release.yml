@@ -58,13 +58,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Establish context
-        id: context
-        uses: dolittle/establish-context-action@v2
-        with:
-          prerelease-branches: ${{ env.PRERELEASE_BRANCHES }}
-          version-file: ${{ env.SOURCE_PATH }}/version.json
-
       - name: Write version info
         uses: dolittle/write-version-to-file-action@v2
         with:
@@ -88,7 +81,6 @@ jobs:
           token: ${{  secrets.BUILD_PAT  }}
           version: ${{ needs.changes.outputs.next-version }}
           body: ${{ needs.changes.outputs.pr-body }}
-          microservice: Studio Shell
 
       - name: Push Semantic Image to Docker Hub
         uses: docker/build-push-action@v2
