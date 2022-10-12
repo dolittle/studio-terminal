@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  PRERELEASE_BRANCHES: "" # Comma separated list of prerelease branch names. 'alpha,rc, ...'
+  PRERELEASE_BRANCHES: "" # Comma separated list of prerelease branch names. 'alpha,rc,...'
   SOURCE_PATH: "."
   DOCKER_FILE: "./Dockerfile"
 
@@ -32,7 +32,6 @@ jobs:
         uses: dolittle/establish-context-action@v2
         with:
           prerelease-branches: ${{ env.PRERELEASE_BRANCHES }}
-          version-file: version.json
 
       - name: Increment version
         id: increment-version
