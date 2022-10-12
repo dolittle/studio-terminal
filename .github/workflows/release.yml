@@ -32,7 +32,6 @@ jobs:
         uses: dolittle/establish-context-action@v2
         with:
           prerelease-branches: ${{ env.PRERELEASE_BRANCHES }}
-          version-file: version.json
 
       - name: Increment version
         id: increment-version
