@@ -18,7 +18,7 @@ RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | APT_KEY_DONT_
 ADD https://github.com/tsl0922/ttyd/releases/download/1.7.1/ttyd.x86_64 /usr/bin/ttyd
 RUN chmod u+rx /usr/bin/ttyd
 
-ADD https://github.com/dolittle/Runtime/releases/download/v8.4.2/dolittle-linux-x64 /usr/bin/dolittle
+ADD https://github.com/dolittle/Runtime/releases/latest/download/dolittle-linux-x64 /usr/bin/dolittle
 RUN chmod a+rx /usr/bin/dolittle
 
 RUN apt-get update \
