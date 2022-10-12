@@ -96,7 +96,7 @@ jobs:
         with:
           push: true
           context: .
-          file: ./${{ env.DOCKER_FILE }}
+          file: ${{ env.DOCKER_FILE }}
           tags: dolittle/shell:${{ needs.changes.outputs.next-version }}
 
       - name: Push latest tag to Docker Hub
@@ -105,5 +105,5 @@ jobs:
         with:
           push: true
           context: .
-          file: ./${{ env.DOCKER_FILE }}
+          file: ${{ env.DOCKER_FILE }}
           tags: dolittle/shell:latest
