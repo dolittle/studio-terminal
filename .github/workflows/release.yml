@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  PRERELEASE_BRANCHES: "" # Comma separated list of prerelease branch names. 'alpha,rc, ...'
+  PRERELEASE_BRANCHES: "" # Comma separated list of prerelease branch names. 'alpha,rc,...'
   SOURCE_PATH: "."
   DOCKER_FILE: "./Dockerfile"
 
