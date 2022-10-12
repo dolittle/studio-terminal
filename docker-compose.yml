@@ -13,7 +13,7 @@ services:
       'DOLITTLE__RUNTIME__EVENTSTORE__BACKWARDSCOMPATIBILITY__VERSION': 'V7'
       'DOLITTLE__RUNTIME__TENANTS__445f8ea8-1a6f-40d7-b2fc-796dba92dc44__RESOURCES__EVENTSTORE__SERVERS__0': 'mongo'
   shell:
-    image: 'studio-shell:1'
+    image: 'studio-terminal:1'
     build: '.'
     ports:
       - '7681:7681'
