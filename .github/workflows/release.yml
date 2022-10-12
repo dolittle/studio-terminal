@@ -17,7 +17,6 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
-      has-changes: ${{ steps.filter.outputs.src }}
       should-publish: ${{ steps.context.outputs.should-publish }}
       release-type: ${{ steps.context.outputs.release-type }}
       current-version: ${{ steps.context.outputs.current-version }}
@@ -45,7 +44,7 @@ jobs:
 
   release:
     needs: changes
-    if: needs.changes.outputs.has-changes == 'true' && needs.changes.outputs.should-publish == 'true'
+    if: needs.changes.outputs.should-publish == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
