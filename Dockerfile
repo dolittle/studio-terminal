@@ -26,6 +26,9 @@ RUN apt-get update \
         libicu66 \
         jq \
         lynx \
+        curl \
+        vim \
+        nano \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd studio \
@@ -35,8 +38,10 @@ RUN useradd studio \
 
 COPY 100-dolittle-runtime-address.sh /etc/profile.d/100-dolittle-runtime-address.sh
 COPY 101-mongosh-no-connect.sh /etc/profile.d/101-mongosh-no-connect.sh
+COPY 199-help.sh /etc/profile.d/199-help.sh
 
 COPY .bash_profile /home/studio/.bash_profile
+COPY .bashrc /home/studio/.bashrc
 COPY .mongoshrc.js /home/studio/.mongoshrc.js
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
