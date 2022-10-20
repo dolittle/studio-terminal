@@ -45,6 +45,7 @@ COPY Source/Bash/help.sh /etc/profile.d/202-help.sh
 COPY Source/CLI/runtime-address-override.sh /etc/profile.d/300-runtime-address-override.sh
 
 COPY Source/MongoDB/mongosh-connect-override.sh /etc/profile.d/400-mongosh-connect-override.sh
+COPY Source/MongoDB/api.js /etc/mongosh/api.js
 
 COPY Source/Bash/.bash_profile /home/studio/.bash_profile
 COPY Source/MongoDB/.mongoshrc.js /home/studio/.mongoshrc.js
