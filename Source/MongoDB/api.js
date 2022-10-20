@@ -1,5 +1,6 @@
 module.exports = (shell) => {
     const shellApi = shell.config._instanceState.shellApi;
+    const shellApiAttributes = shell.global['@@@mdb.signatures@@@'].ShellApi.attributes;
     const Help = shell.help.constructor;
     
     const helpCommandAttr = Object.getPrototypeOf(shell.help).attr;
@@ -18,7 +19,7 @@ module.exports = (shell) => {
         return callable;
     };
     
-    const addCommandToShell = ({ name, callback, help, completer }) => {
+    const addShellCommand = ({ name, callback, help, completer }) => {
         const command = (...args) => callback(...args);
         command.isDirectShellCommand = true;
         command.acceptsRawInput = false;
@@ -51,9 +52,34 @@ module.exports = (shell) => {
         shellApi[name] = command;
         shell[name] = func;
     };
+
+    const overrideShellCommand = ({ name, callback, help, completer }) => {
+        const oldCommand = shellApi[name];
+
+        const command = function(...args) {
+            return callback.call(this, oldCommand, ...args);
+        }
+        Object.assign(command, oldCommand);
+
+        if (completer !== undefined) {
+            const oldCompleter = oldCommand.shellCommandCompleter;
+            const newCompleter = function(params, args) {
+                return completer.call(this, oldCompleter, params, args);
+            }
+            command.shellCommandCompleter = newCompleter;
+            shellApiAttributes[name].shellCommandCompleter = newCompleter;
+        }
+
+        if (help !== undefined) {
+            command.help = help(command.help);
+        }
+
+        shellApi[name] = command;
+    };
     
     return {
-        addCommandToShell,
+        addShellCommand,
+        overrideShellCommand,
         createHelp,
         shellApi,
         Help,

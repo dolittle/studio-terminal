@@ -2,95 +2,103 @@
 disableTelemetry()
 
 {
-    const { addCommandToShell, createHelp } = require('/etc/mongosh/api.js')(this);
+    const global = this;
+    const { addShellCommand, createHelp, overrideShellCommand } = require('/etc/mongosh/api.js')(global);
+    const { TenantDatabases } = require('/etc/mongosh/TenantDatabases.js');
 
-    addCommandToShell({
-        name: 'dolittle',
-        callback: (...args) =>
-        {
-            console.log('Hello from dolittle command', ...args);
-            return Promise.resolve();
+    const platform = require('/home/studio/.dolittle/platform.json');
+    const is_production = /^prod/i.test(platform.environment);
+    const production_warning = (message) =>
+        is_production && print(`Friendly reminder, this is a \x1B[1;33mPRODUCTION\x1B[0m environment. ${message ?? ''}`);
+
+    const resources = require('/home/studio/.dolittle/resources.json');
+
+    const databases = new TenantDatabases(global, resources);
+
+    // Override the 'use' command to set current tenant and resource by name
+    overrideShellCommand({
+        name: 'use',
+        callback: function (use, ...args) {
+            const result = databases.getDatabaseAndHostToUse(...args);
+            if (result === undefined) {
+                production_warning();
+                return use.call(this, args[0]);
+            }
+
+            const [db, host] = result;
+
+            try {
+                if (!global.db.getMongo()._connectionInfo.connectionString.startsWith(host)) {
+                    global.db = global.connect(host);
+                }
+            } catch {
+                global.db = global.connect(host);
+            }
+
+            production_warning();
+            return use.call(this, db);
+        },
+        help: (help) => {
+            help.help += ' or tenant';
+            return help;
+        },
+        completer: async function (completer, params, args) {
+            const suggestions = await completer.call(this, params, args) ?? [];
+
+            if (args[1] === 'tenant') {
+                return [...databases.getSuggestedTenants(args[2] ?? ''), ...suggestions].map(_ => `tenant ${_}`);
+            }
+
+            const resources = databases.getSuggestedResources(args[1]);
+            if ('tenant'.startsWith(args[1])) {
+                return ['tenant', ...resources, ...suggestions];
+            } else {
+                return [...resources, ...suggestions];
+            }
+        },
+    });
+
+    // Add the same info command as in the shell to print current microservice
+    addShellCommand({
+        name: 'info',
+        callback: async (...args) => {
+            print(`This MongoDB shell interacts with:`);
+            print(`\tApplication: ${platform.applicationName} (${platform.applicationID})`);
+            print(`\tEnvironment: ${platform.environment}`);
+            print(`\tMicroservice: ${platform.microserviceName} (${platform.microserviceID})`);
+            production_warning();
         },
         help: createHelp({
-            help: 'The Dolittle command',
-            attr: [
-                { name: 'tenants', description: 'Lists the configured tenants' },
-            ],
+            help: 'Prints the information about which microservice this terminal interacts with',
         }),
     });
 
+    // Customise the prompt
+    global.prompt = () => {
+        let db = '';
+        try { db = global.db.getName() } catch {}
 
-    // const shellSymbols = Object.getOwnPropertySymbols(Object.getPrototypeOf(Object.getPrototypeOf(this.help)));
-    // const asPrintable = shellSymbols.find(_ => _.description.includes('asPrintable'));
-    // const shellApiType = shellSymbols.find(_ => _.description.includes('shellApiType'));
+        return `studio@${platform.applicationName}>${platform.environment}>${platform.microserviceName}: ${db}> `;
+    }
 
-    // const helpAttr = Object.getPrototypeOf(this.help).attr;
+    // Connect to the first tenant when booting up
+    const firstTenant = databases.getSuggestedTenants('')[0];
+    if (firstTenant === undefined) {
+        console.warn('No tenants configured for this microservice');
+    } else {
+        global.use('tenant', firstTenant);
+    }
 
-    // const platform = require('/home/studio/.dolittle/platform.json');
-    // const resources = require('/home/studio/.dolittle/resources.json');
-
-    // const is_production = /^prod/i.test(platform.environment);
-    // const production_warning = (message) => {
-    //     if (is_production) {
-    //         this.print(`Friendly reminder, this is a \x1B[1;33mPRODUCTION\x1B[0m environment. ${message ?? ''}`)
-    //     }
-    // };
-
-    // // Setup the platform information
-    // {
-    //     // Add info command
-    //     Object.defineProperty(
-    //         this,
-    //         'info',
-    //         {
-    //             value: new (class Info {
-    //                 [asPrintable]() {
-    //                     return {
-    //                         help: 'This terminal interacts with',
-    //                         attr: [
-    //                             { name: 'Application', description: `${platform.applicationName} (${platform.applicationID})`},
-    //                             { name: 'Environment', description: `${platform.environment}`},
-    //                             { name: 'Microservice', description: `${platform.microserviceName} (${platform.microserviceID})`},
-    //                         ]
-    //                     }
-    //                 }
-        
-    //                 get [shellApiType]() { return 'Help' }
-    //             })(),
-    //             writable: false,
-    //         }
-    //     )
-    //     helpAttr.splice(0, 0, { name: 'info', description: 'Print the information about which microservice this terminal interacts with' });
-    
-    //     // Customize the prompt
-    //     this.prompt = () => {
-    //         return `studio@${platform.applicationName}>${platform.environment}>${platform.microserviceName}: > `;
-    //     }
-    // }
-    
-    // // Setup the resources
-    // {
-    //     // Connect to MongoDB of the first tenants event-store address when starting
-    //     const firstTenantEventStoreServer = Object.values(resources)[0].eventStore.servers[0];
-    //     this.db = connect(`mongodb://${firstTenantEventStoreServer}:27017/?directConnection=true`);
-
-    //     // Remind people when using production
-    //     if (is_production) {
-    //         const dbProto = Object.getPrototypeOf(this.db);
-
-    //         const originalDrop = dbProto.dropDatabase;
-    //         dbProto.dropDatabase = function (confirmation) {
-    //             if (confirmation === 'yes') {
-    //                 originalDrop.call(this, originalDrop);
-    //             } else {
-    //                 production_warning('To really drop this database: db.dropDatabase("yes")')
-    //             }
-    //         }
-    //     }
-    // }
-
-    // this.print();
-    // production_warning();
-    // this.print();
+    // Override dangerous commands on 'db' if in production
+    if (is_production) {
+        // Override dropDatabase
+        global.db.dropProductionDatabase = global.db.dropDatabase;
+        global.db.dropDatabase = function(confirmation, ...args) {
+            if (confirmation === 'yes') {
+                return this.dropProductionDatabase(...args);
+            }
+            production_warning('To really drop this database: db.dropDatabase("yes") or db.dropProductionDatabase()')
+        };
+    }
 }
 
