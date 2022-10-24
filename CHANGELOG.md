@@ -1,3 +1,13 @@
+# [0.0.4] - 2022-10-24 [PR: #6](https://github.com/dolittle/studio-terminal/pull/6)
+## Summary
+
+Adds some description of what this repository is in the `README.md` - and the link to the repository back in the `help` command output.
+
+### Added
+
+- A link to this repository in the `help` command output.
+
+
 # [0.0.3] - 2022-10-24 [PR: #5](https://github.com/dolittle/studio-terminal/pull/5)
 ## Summary
 
