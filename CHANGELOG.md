@@ -1,3 +1,16 @@
+# [0.0.3] - 2022-10-24 [PR: #5](https://github.com/dolittle/studio-terminal/pull/5)
+## Summary
+
+Create local Kubernetes setup to help test the functionality of the commands, move the files around a little bit and create some customisations for the MongoDB shell.
+
+### Added
+
+- Local Kubernetes setup to allow testing the same configuration and networking setup.
+- Parsing of the `.dolittle/*.json` config files for environment information and resource (MongoDB) connection strings.
+- A yellow warning whenever a uses enters the shell in an environment matching `/^prod/I`
+- Customisations of the `mongosh` REPL - the `use` command can be used to select the right DB for a resource per tenant, and if you try to. `dropDatabase()` in production - you'll get a warning.
+
+
 # [0.0.2] - 2022-10-14 [PR: #4](https://github.com/dolittle/studio-terminal/pull/4)
 ## Summary
 
