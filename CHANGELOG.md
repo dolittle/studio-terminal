@@ -1,3 +1,13 @@
+# [0.0.5] - 2022-10-24 [PR: #7](https://github.com/dolittle/studio-terminal/pull/7)
+## Summary
+
+Fixes a bug where the `DOLITTLE_IS_PRODUCTION` environment variable was not properly unset in non-production environments.
+
+### Fixed
+
+- The production warning was printed in non-production environments because the environment variable was not properly unset.
+
+
 # [0.0.4] - 2022-10-24 [PR: #6](https://github.com/dolittle/studio-terminal/pull/6)
 ## Summary
 
