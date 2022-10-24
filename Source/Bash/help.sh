@@ -8,4 +8,6 @@ function help() {
     echo -e "\tUse the \e[1mmongosh\e[0m command to connect to with the MongoDB for this microservice"
     echo -e "\tUse the \e[1mhelp\e[0m command to print this message again"
     echo -e "Other common *nix commands are also available"
+    echo -e ""
+    echo -e "See https://github.com/dolittle/studio-terminal for more details, or how to request new features or tools in this shell."
 }
