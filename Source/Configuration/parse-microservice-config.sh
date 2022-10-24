@@ -18,5 +18,6 @@ shopt -s nocasematch
 export DOLITTLE_IS_PRODUCTION="TRUE"
 if ! [[ "$DOLITTLE_ENVIRONMENT" =~ "^prod" ]]; then
     export -n DOLITTLE_IS_PRODUCTION
+    unset DOLITTLE_IS_PRODUCTION
 fi
 shopt -u nocasematch
