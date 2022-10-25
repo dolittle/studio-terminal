@@ -1,3 +1,13 @@
+# [0.0.6] - 2022-10-25 [PR: #8](https://github.com/dolittle/studio-terminal/pull/8)
+## Summary
+
+Adds the Dolittle orange to the logo printed when starting the shell.
+
+### Added
+
+- Dolittle orange to the logo printed when starting the shell.
+
+
 # [0.0.5] - 2022-10-24 [PR: #7](https://github.com/dolittle/studio-terminal/pull/7)
 ## Summary
 
