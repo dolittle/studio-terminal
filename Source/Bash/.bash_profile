@@ -1,15 +1,18 @@
 #!/bin/bash
 
+COLOR=$(echo -ne "\e[38;2;255;75;0m")
+RESET=$(echo -ne "\e[0m")
+
 # Print a pretty logo as a welcome message
 cat <<-END
-        / \        
-       /   \       
-   __  \    \       ___   ___  _    ___ _____ _____ _    ___ 
-  /  \  \    \     |   \ / _ \| |  |_ _|_   _|_   _| |  | __|
-  \__/  /    /     | |) | (_) | |__ | |  | |   | | | |__| _| 
-  _____/    /      |___/ \___/|____|___| |_|   |_| |____|___|
- /         /       
-/_________/        
+$COLOR        / \        $RESET
+$COLOR       /   \       $RESET
+$COLOR   __  \    \      $RESET ___   ___  _    ___ _____ _____ _    ___ 
+$COLOR  /  \  \    \     $RESET|   \ / _ \| |  |_ _|_   _|_   _| |  | __|
+$COLOR  \__/  /    /     $RESET| |) | (_) | |__ | |  | |   | | | |__| _| 
+$COLOR  _____/    /      $RESET|___/ \___/|____|___| |_|   |_| |____|___|
+$COLOR /         /       $RESET
+$COLOR/_________/        $RESET
 END
 
 # Make the prompt show the current microservice
