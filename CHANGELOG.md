@@ -1,3 +1,13 @@
+# [0.0.7] - 2023-2-7 [PR: #9](https://github.com/dolittle/studio-terminal/pull/9)
+## Summary
+
+Add support for runtime.yml configuration
+
+### Added
+
+- Support for runtime.yml configuration
+
+
 # [0.0.6] - 2022-10-25 [PR: #8](https://github.com/dolittle/studio-terminal/pull/8)
 ## Summary
 
