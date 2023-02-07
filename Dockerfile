@@ -53,6 +53,7 @@ COPY Source/MongoDB/TenantDatabases.js /etc/mongosh/TenantDatabases.js
 COPY Source/Bash/.bash_profile /home/studio/.bash_profile
 COPY Source/MongoDB/.mongoshrc.js /home/studio/.mongoshrc.js
 
+RUN mkdir /home/studio/.dolittle
 RUN chmod a+rwx /home/studio/.dolittle/
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
