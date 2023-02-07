@@ -6,13 +6,12 @@ disableTelemetry()
     const { addShellCommand, createHelp, overrideShellCommand } = require('/etc/mongosh/api.js')(global);
     const { TenantDatabases } = require('/etc/mongosh/TenantDatabases.js');
 
-    const platform = require('/home/studio/.dolittle/platform.json');
-    const is_production = /^prod/i.test(platform.environment);
+    const is_production = /^prod/i.test(process.env.DOLITTLE_ENVIRONMENT);
     const production_warning = (message) =>
         is_production && print(`Friendly reminder, this is a \x1B[1;33mPRODUCTION\x1B[0m environment. ${message ?? ''}`);
 
-    const resources = require('/home/studio/.dolittle/resources.json');
 
+    const resources = require('/home/studio/.dolittle/resources.json');
     const databases = new TenantDatabases(global, resources);
 
     // Override the 'use' command to set current tenant and resource by name
@@ -63,9 +62,9 @@ disableTelemetry()
         name: 'info',
         callback: async (...args) => {
             print(`This MongoDB shell interacts with:`);
-            print(`\tApplication: ${platform.applicationName} (${platform.applicationID})`);
-            print(`\tEnvironment: ${platform.environment}`);
-            print(`\tMicroservice: ${platform.microserviceName} (${platform.microserviceID})`);
+            print(`\tApplication: ${process.env.DOLITTLE_APPLICATION_NAME} (${process.env.DOLITTLE_APPLICATION_ID})`);
+            print(`\tEnvironment: ${process.env.DOLITTLE_ENVIRONMENT}`);
+            print(`\tMicroservice: ${process.env.DOLITTLE_MICROSERVICE_NAME} (${process.env.DOLITTLE_MICROSERVICE_ID})`);
             production_warning();
         },
         help: createHelp({
@@ -78,7 +77,7 @@ disableTelemetry()
         let db = '';
         try { db = global.db.getName() } catch {}
 
-        return `studio@${platform.applicationName}>${platform.environment}>${platform.microserviceName}: ${db}> `;
+        return `studio@${process.env.DOLITTLE_APPLICATION_NAME}>${process.env.DOLITTLE_ENVIRONMENT}>${process.env.DOLITTLE_MICROSERVICE_NAME}: ${db}> `;
     }
 
     // Connect to the first tenant when booting up

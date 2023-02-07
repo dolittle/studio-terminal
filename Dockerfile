@@ -21,6 +21,8 @@ RUN chmod u+rx /usr/bin/ttyd
 ADD https://github.com/dolittle/Runtime/releases/latest/download/dolittle-linux-x64 /usr/bin/dolittle
 RUN chmod a+rx /usr/bin/dolittle
 
+RUN wget -qO /bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+RUN chmod a+rx /bin/yq
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libicu66 \
@@ -50,6 +52,8 @@ COPY Source/MongoDB/TenantDatabases.js /etc/mongosh/TenantDatabases.js
 
 COPY Source/Bash/.bash_profile /home/studio/.bash_profile
 COPY Source/MongoDB/.mongoshrc.js /home/studio/.mongoshrc.js
+
+RUN chmod a+rwx /home/studio/.dolittle/
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["ttyd", "su", "-", "studio"]
